@@ -67,14 +67,16 @@ func main() {
 	mux.HandleFunc("POST /api/chirps", apiCfg.handleCreateChirp)
 	mux.HandleFunc("GET /api/chirps", apiCfg.handleGetChirps)
 	mux.HandleFunc("GET /api/chirps/{id}", apiCfg.handleGetChirp)
+	mux.HandleFunc("DELETE /api/chirps/{id}", apiCfg.handleDeleteChirps)
 
 	mux.HandleFunc("POST /api/users", apiCfg.handleCreateUser)
 	mux.HandleFunc("PUT /api/users", apiCfg.handleUpdateUser)
-	// mux.HandleFunc("DELETE /api/users/{id}")
 
 	mux.HandleFunc("POST /api/login", apiCfg.handleLogin)
 	mux.HandleFunc("POST /api/refresh", apiCfg.handlerRefresh)
 	mux.HandleFunc("POST /api/revoke", apiCfg.handlerRevoke)
+
+	mux.HandleFunc("POST /api/polka/webhooks", apiCfg.handleUserUpgrade)
 
 	mux.Handle("/app/", apiCfg.middlewareMetricsInc(http.StripPrefix("/app", http.FileServer(http.Dir(filepathRoot)))))
 

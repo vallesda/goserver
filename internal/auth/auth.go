@@ -16,6 +16,8 @@ import (
 
 type TokenType string
 
+var ErrNoAuthHeaderIncluded = errors.New("no auth header included in request")
+
 const (
 	// TokenTypeAccess -
 	TokenTypeAccess TokenType = "chirpy"
@@ -24,7 +26,7 @@ const (
 func HashPassword(password string) (string, error) {
 	encrypted, err := bcrypt.GenerateFromPassword([]byte(password), 0)
 	if err != nil {
-		return "", errors.New("error hashing password")
+		return "", ErrNoAuthHeaderIncluded
 	}
 	return string(encrypted), nil
 }
