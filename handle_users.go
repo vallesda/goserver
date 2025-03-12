@@ -140,7 +140,19 @@ func (cfg *apiConfig) handleUserUpgrade(w http.ResponseWriter, r *http.Request) 
 
 	userId, err := uuid.Parse(params.Data.UserID)
 	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Malformed Id", err)
+		return
+	}
 
+	apiKey, err := auth.GetAPIKey(r.Header)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Couldn't validate ApiKey", err)
+		return
+	}
+
+	if apiKey != cfg.polkaKey {
+		respondWithError(w, http.StatusUnauthorized, "Not a valid api key", err)
+		return
 	}
 
 	_, err = cfg.db.UpgradeToChirpyRed(r.Context(), userId)

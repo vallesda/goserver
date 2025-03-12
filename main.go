@@ -18,6 +18,7 @@ type apiConfig struct {
 	db             *database.Queries
 	platform       string
 	jwtSecret      string
+	polkaKey       string
 }
 
 func (cfg *apiConfig) middlewareMetricsInc(next http.Handler) http.Handler {
@@ -47,6 +48,11 @@ func main() {
 		log.Fatal("jwtSecret must be set")
 	}
 
+	polkaKey := os.Getenv("POLKA_KEY")
+	if platform == "" {
+		log.Fatal("polka key must be set")
+	}
+
 	dbConn, err := sql.Open("postgres", dbURL)
 	if err != nil {
 		log.Fatal("Error connecting")
@@ -59,6 +65,7 @@ func main() {
 		db:             dbQueries,
 		platform:       platform,
 		jwtSecret:      jwtSecret,
+		polkaKey:       polkaKey,
 	}
 	mux := http.NewServeMux()
 
